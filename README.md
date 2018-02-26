@@ -5,6 +5,6 @@ Why Rachmaninov? He's was the only picture I had downloaded on my PC when create
 
 Is this a work in progress? Yes. Though functional, perhaps I'll add things in the near future.
 
-Why share the script? Because with really minor changes it can do lots of other things. So that's up to anybody. 
+Why share the script? Because with really minor changes it can do lots of other things. So that's up to anybody. Also because is extremely simple and anyone could tweak it in its own advantage or taste. 
 
 Visit him!: https://twitter.com/RachLovesPuppy
