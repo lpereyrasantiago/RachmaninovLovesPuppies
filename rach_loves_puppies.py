@@ -3,6 +3,8 @@
 # Rachmaninov learned how to store values in .txt files. He will put on "data.txt" every image he has already twtitted,
 # in order not to twit it again. That's how cool he is.
 
+# Fixed quotes being twitted more than once. 
+
 # Rachmaninov learned how to send a private message to somebody he likes. He can now choose a random line from a given
 # .txt file and send it privately trough twitter. This has a 10% chances to happen: thus we avoid spam!!
 
@@ -21,20 +23,12 @@ def create_data_file(path):
     if os.path.isfile(path) == False:
         os.mknod("data.txt")
 
-def create_quote_data(path):
-    if os.path.isfile(path) == False:
-        os.mknod("quotedata.txt")
-
-def store_updated_quotes(path, twitted_quote):
-    with open(path, 'a') as outfile:
-        json.dump(twitted_quote, outfile, ensure_ascii=False)
-
 def store_updated_images(twitted_image):
 
     with open('data.txt', 'a') as outfile:
         json.dump(twitted_image, outfile, ensure_ascii=False)
 
-def store_updated_love(path, texted):
+def store_sent_message(path, texted):
     with open(path, 'a') as outfile:
         json.dump(texted, outfile, ensure_ascii=False)
 
@@ -47,27 +41,27 @@ def twit_random_quote():
      # The function chooses a single line from a .txt file to updated as status, so it should probably contain
     # one quote per line. This function can be tweaked in order not to update only a line, that's up
     # to anybody, though you should be careful not to exceed twitter's max characters limit.
-
-    data_path = "path to a .txt where to store the updated quotes."
+    
+    # This function does not store the twitted quotes on any data file anymore. Now it makes it simplier: it erases the
+    # quote from the .txt file the quotes are in, by re-writing all lines as long as they are NOT the twitted one.
+    # See from lines 68 to 72. This way the next time the bot runs this function, the quote it updated before is not
+    # even on the quotes .txt file anymore, so it can't be twitted again.
+    
     text_path = "path to .txt file containing the quotes, one per line."
 
-    create_quote_data(data_path)
-
-    while True:
+   while True:
         try: 
             with open(text_path, "r") as f:
                 line_lecture = f.readlines()
             random_quote = random.choice(line_lecture)
-            random_quote_stringcheck = '"' + random_quote + '"'
-            with open(data_path, "r") as f:
-                data_lecture = f.read()
-                if not random_quote_stringcheck in data_lecture:
-                    API.update_status(random_quote)
-                    store_updated_quotes(data_path, random_quote)
-                    print("Updated quote.")
-                    break
-                else:
-                    continue
+            API.update_status(random_quote)
+            print("Updated quote.")
+            with open(text_path, "w") as f:
+                for line in line_lecture:
+                    if line != random_quote:
+                        f.write(line)
+                f.truncate()
+            break
         except(tweepy.error.TweepError):
             print("Something happened D")
             continue
@@ -129,7 +123,7 @@ def send_phrase_message():
                     if not random_phrase_stringcheck in data_lecture:
                         love_message = intro + random_phrase
                         API.send_direct_message(addressee_user, addressee_screenname, addressee_id, love_message)
-                        store_updated_love(phrase_data_path, random_phrase)
+                        store_sent_message(phrase_data_path, random_phrase)
                         break
                     else:
                         continue
