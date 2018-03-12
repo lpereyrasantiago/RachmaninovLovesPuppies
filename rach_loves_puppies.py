@@ -44,7 +44,7 @@ def twit_random_quote():
     
     # This function does not store the twitted quotes on any data file anymore. Now it makes it simplier: it erases the
     # quote from the .txt file the quotes are in, by re-writing all lines as long as they are NOT the twitted one.
-    # See from lines 68 to 72. This way the next time the bot runs this function, the quote it updated before is not
+    # See from lines 59 to 63. This way the next time the bot runs this function, the quote it updated before is not
     # even on the quotes .txt file anymore, so it can't be twitted again.
     
     text_path = "path to .txt file containing the quotes, one per line."
